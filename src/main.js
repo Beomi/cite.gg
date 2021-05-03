@@ -21,8 +21,10 @@ import 'vue-good-table/dist/vue-good-table.css'
 Vue.use(Autocomplete)
 Vue.use(VueRouter)
 
+const DEV = false
+
 const instance = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: DEV ? 'http://localhost:8000' : 'https://find-my-reference-backend.herokuapp.com',
   timeout: 10000,
 });
 Vue.prototype.$axios = instance
