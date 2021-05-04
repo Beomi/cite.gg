@@ -21,29 +21,38 @@
         </div>
 
         <div class="detail">
-            <h3>🔍 Common Reference</h3>
-            <CommonReference :dataset="paperInfo.counter"></CommonReference>
+            <h3>🔍 Common Reference <small>(Click cell to open semantic scholar url)</small></h3>
+            <div v-if="paperInfo.counter.length">
+                <CommonReference :dataset="paperInfo.counter"></CommonReference>
+            </div>
+            <div v-else>
+                <div class="alert alert-danger" role="alert">
+                    Common Reference More than > 200, Can't show the data :(
+                </div>
+            </div>
         </div>
 
         <div class="detail">
-            <h3>Citations</h3>
-            <PaperCards :cards="paperInfo.metadata.citations"></PaperCards>
+            <h3>Citations <small>(Click cell to open semantic scholar url)</small></h3>
+            <!--            <PaperCards :cards="paperInfo.metadata.citations"></PaperCards>-->
+            <ReferenceTable :dataset="paperInfo.metadata.citations"></ReferenceTable>
         </div>
         <div class="detail">
-            <h3>References</h3>
-            <PaperCards :cards="paperInfo.metadata.references"></PaperCards>
-
+            <h3>References <small>(Click cell to open semantic scholar url)</small></h3>
+            <ReferenceTable :dataset="paperInfo.metadata.references"></ReferenceTable>
+            <!--            <PaperCards :cards="paperInfo.metadata.references"></PaperCards>-->
         </div>
     </div>
 </template>
 
 <script>
-  import PaperCards from "./PaperCards";
+  // import PaperCards from "./PaperCards";
   import CommonReference from "./CommonReference";
+  import ReferenceTable from "./ReferenceTable";
 
   export default {
     name: "Paper",
-    components: {CommonReference, PaperCards},
+    components: {ReferenceTable, CommonReference},
     computed: {
       paper_url() {
         return this.$route.query['q']
@@ -69,5 +78,10 @@
 <style scoped>
     .detail {
         padding-top: 20px;
+    }
+
+    small {
+        font-weight: 200;
+        font-size: 1rem;
     }
 </style>

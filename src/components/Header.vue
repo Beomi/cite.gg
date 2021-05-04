@@ -4,7 +4,11 @@
             <div class="container-fluid container">
                 <router-link class="navbar-brand" to="/">Find My Reference!</router-link>
                 <div class="d-flex">
-                    Made by <a href="https://github.com/beomi">Beomi</a>
+                    <a href="https://github.com/beomi/find-my-reference" target="_blank">
+                        <button class="btn btn-info">
+                            Github <i class="bi-github"></i>
+                        </button>
+                    </a>
                 </div>
             </div>
         </nav>
@@ -16,3 +20,14 @@
     name: "Header",
   };
 </script>
+
+<style scoped>
+    i {
+        margin-left: 5px;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+</style>

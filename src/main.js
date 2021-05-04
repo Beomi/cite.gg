@@ -21,11 +21,11 @@ import 'vue-good-table/dist/vue-good-table.css'
 Vue.use(Autocomplete)
 Vue.use(VueRouter)
 
-const DEV = false
+const DEV = process.env.VUE_APP_DEBUG
 
 const instance = axios.create({
   baseURL: DEV ? 'http://localhost:8000' : 'https://find-my-reference-backend.herokuapp.com',
-  timeout: 10000,
+  timeout: 100000,
 });
 Vue.prototype.$axios = instance
 loadProgressBar({}, instance)
