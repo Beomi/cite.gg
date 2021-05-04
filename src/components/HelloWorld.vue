@@ -8,7 +8,8 @@
                 @submit="onSubmit"
         ></autocomplete>
         <div class="history">
-            <button class="btn btn-sm btn-danger right">Clear History <i class="bi bi-trash-fill"></i></button>
+            <button class="btn btn-sm btn-danger right" @click="clearHistory">Clear History <i
+                    class="bi bi-trash-fill"></i></button>
             <h4>History <small>(on your browser!)</small></h4>
             <div class="card" v-if="history.length">
                 <ul class="list-group list-group-flush" :key="i" v-for="i in history">
@@ -39,6 +40,9 @@
       }
     },
     methods: {
+      clearHistory() {
+        this.history = []
+      },
       search(input) {
         // const r = this.$axios.get('/papers/autocomplete', {
         //   params: {query: input}
