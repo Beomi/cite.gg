@@ -1,12 +1,18 @@
 <template>
     <div class="hello">
-        <autocomplete
-                :search="search"
-                :autoSelect="true"
-                placeholder="Find your Reference! 🌟"
-                aria-label="Find your Reference! 🌟"
-                @submit="onSubmit"
-        ></autocomplete>
+        <div>
+            <small class="alert-light">
+                Search with arXiv URL or DOI urls
+                (example: https://arxiv.org/abs/2005.12503)
+            </small>
+            <autocomplete
+                    :search="search"
+                    :autoSelect="true"
+                    placeholder="Find your Reference! 🌟"
+                    aria-label="Find your Reference! 🌟"
+                    @submit="onSubmit"
+            ></autocomplete>
+        </div>
         <div class="history">
             <button class="btn btn-sm btn-danger right" @click="clearHistory">Clear History <i
                     class="bi bi-trash-fill"></i></button>
