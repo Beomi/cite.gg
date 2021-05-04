@@ -21,7 +21,7 @@ import 'vue-good-table/dist/vue-good-table.css'
 Vue.use(Autocomplete)
 Vue.use(VueRouter)
 
-const DEV = process.env.VUE_APP_DEBUG
+const DEV = process.env.NODE_ENV !== 'production'
 
 const instance = axios.create({
   baseURL: DEV ? 'http://localhost:8000' : 'https://find-my-reference-backend.herokuapp.com',
