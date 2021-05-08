@@ -24,7 +24,7 @@ Vue.use(VueRouter)
 const DEV = process.env.NODE_ENV !== 'production'
 
 const instance = axios.create({
-  baseURL: DEV ? 'http://localhost:8000' : 'https://find-my-reference-backend.herokuapp.com',
+  baseURL: DEV ? 'http://localhost:8000' : 'https://api.cite.gg',
   timeout: 100000,
 });
 Vue.prototype.$axios = instance
