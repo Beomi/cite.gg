@@ -30,11 +30,16 @@
             <div v-else-if="commonReference.length">
                 <CommonReference :dataset="commonReference"></CommonReference>
             </div>
-            <div v-else-if="paperInfo.metadata.citations.length >= 1000">
+            <div v-else-if="paperInfo.metadata.citations.length >= 500">
                 <div class="alert alert-danger" role="alert">
                     This paper has too many citations({{paperInfo.metadata.citations.length}}) to get common references
                     :( <br>
-                    Plz try with less-cited(~1000) paper to get common refs.
+                    Plz try with less-cited(~500) paper to get common refs.
+                </div>
+            </div>
+            <div v-else-if="isQueryFailed">
+                <div class="alert alert-warning" role="alert">
+                    Timeout occured! (Maybe too much citations..)
                 </div>
             </div>
             <div v-else>
@@ -74,11 +79,12 @@
       return {
         paperInfo: {},
         commonReference: [],
+        isQueryFailed: false,
       }
     },
     async mounted() {
       await this.getMetaData()
-      if (this.paperInfo.metadata.citations.length < 1000 && this.paperInfo.metadata.citations.length >= 1) {
+      if (this.paperInfo.metadata.citations.length < 500 && this.paperInfo.metadata.citations.length >= 1) {
         await this.getCommonReference()
       }
     },
@@ -88,8 +94,14 @@
         this.paperInfo = r.data
       },
       async getCommonReference() {
-        const r = await this.$axios.get(`/papers/common-references/?query=${this.paperInfo.metadata['paperId']}`)
-        this.commonReference = r.data
+        try {
+          const r = await this.$axios.get(`/papers/common-references/?query=${this.paperInfo.metadata['paperId']}`)
+          this.commonReference = r.data
+        } catch (e) {
+          console.log("Timeout?")
+          console.error(e)
+          this.isQueryFailed = true
+        }
       }
     }
   }
