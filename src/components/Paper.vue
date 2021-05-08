@@ -2,7 +2,7 @@
     <div>
         <!--        <h1>Paper detail</h1>-->
         <h2>{{paperInfo.metadata.title}} </h2>
-        <small>(uri: {{paperInfo.uri}})</small>
+        <small>(paper_id: {{paperInfo.paper_id}})</small>
         <div>
             <a target="blank" :href="paperInfo.metadata.url">{{paperInfo.metadata.url}}</a>
             <p>
@@ -22,12 +22,19 @@
 
         <div class="detail">
             <h3>🔍 Common Reference <small>(Click cell to open semantic scholar url)</small></h3>
-            <div v-if="paperInfo.counter.length">
-                <CommonReference :dataset="paperInfo.counter"></CommonReference>
+            <div v-if="commonReference.length">
+                <CommonReference :dataset="commonReference"></CommonReference>
+            </div>
+            <div v-else-if="paperInfo.metadata.citations.length >= 1000">
+                <div class="alert alert-danger" role="alert">
+                    This paper has too many citations({{paperInfo.metadata.citations.length}}) to get common references
+                    :( <br>
+                    Plz try with less-cited(~1000) paper to get common refs.
+                </div>
             </div>
             <div v-else>
-                <div class="alert alert-danger" role="alert">
-                    Common Reference More than > 500, Can't show the data :(
+                <div class="alert alert-info" role="alert">
+                    Please wait to get Common Reference data! (it will takes some time...)
                 </div>
             </div>
         </div>
@@ -61,15 +68,23 @@
     data() {
       return {
         paperInfo: {},
+        commonReference: [],
       }
     },
-    mounted() {
-      this.getMetaData()
+    async mounted() {
+      await this.getMetaData()
+      if (this.paperInfo.metadata.citations.length < 1000) {
+        await this.getCommonReference()
+      }
     },
     methods: {
       async getMetaData() {
-        const r = await this.$axios.get(`/papers/info/?query=${decodeURIComponent(this.paper_url)}`)
+        const r = await this.$axios.get(`/papers/?query=${decodeURIComponent(this.paper_url)}`)
         this.paperInfo = r.data
+      },
+      async getCommonReference() {
+        const r = await this.$axios.get(`/papers/common-references/?query=${this.paperInfo.metadata['paperId']}`)
+        this.commonReference = r.data
       }
     }
   }

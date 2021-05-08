@@ -16,7 +16,8 @@
     props: ['dataset'],
     methods: {
       onCellClick(params) {
-        window.open(params.row.url)
+        const routeData = this.$router.resolve({path: '/paper', query: {q: params.row.paperId}})
+        window.open(routeData.href, '_blank')
       }
     },
     data() {
@@ -46,6 +47,11 @@
             label: 'Year',
             field: 'year',
             type: 'number',
+          },
+          {
+            label: 'paperId',
+            field: 'paperId',
+            hidden: true,
           },
         ],
       };
