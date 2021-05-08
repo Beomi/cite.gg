@@ -27,7 +27,7 @@
             </div>
             <div v-else>
                 <div class="alert alert-danger" role="alert">
-                    Common Reference More than > 200, Can't show the data :(
+                    Common Reference More than > 500, Can't show the data :(
                 </div>
             </div>
         </div>
