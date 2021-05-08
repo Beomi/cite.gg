@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "predeploy": "npm run build",
-    "deploy": "echo 'cite.gg' > ./build/CNAME && gh-pages -d dist"
+    "deploy": "echo 'cite.gg' > ./dist/CNAME && gh-pages -d dist"
   },
   "dependencies": {
     "@trevoreyre/autocomplete-vue": "^2.2.0",
