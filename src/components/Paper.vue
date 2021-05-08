@@ -22,7 +22,12 @@
 
         <div class="detail">
             <h3>🔍 Common Reference <small>(Click cell to open semantic scholar url)</small></h3>
-            <div v-if="commonReference.length">
+            <div v-if="paperInfo.metadata.citations.length === 0">
+                <div class="alert alert-secondary" role="alert">
+                    No citations found.
+                </div>
+            </div>
+            <div v-else-if="commonReference.length">
                 <CommonReference :dataset="commonReference"></CommonReference>
             </div>
             <div v-else-if="paperInfo.metadata.citations.length >= 1000">
@@ -73,7 +78,7 @@
     },
     async mounted() {
       await this.getMetaData()
-      if (this.paperInfo.metadata.citations.length < 1000) {
+      if (this.paperInfo.metadata.citations.length < 1000 && this.paperInfo.metadata.citations.length >= 1) {
         await this.getCommonReference()
       }
     },
