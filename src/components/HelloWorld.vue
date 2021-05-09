@@ -18,9 +18,12 @@
                     class="bi bi-trash-fill"></i></button>
             <h4>History <small>(on your browser!)</small></h4>
             <div class="card" v-if="history.length">
-                <ul class="list-group list-group-flush" :key="i" v-for="i in history">
-                    <router-link :to="`/paper?q=${i}`">
-                        <li class="list-group-item">{{i}}</li>
+                <ul class="list-group list-group-flush" :key="i.paperId" v-for="i in history">
+                    <router-link :to="`/paper?q=${i.paperId}`">
+                        <li class="list-group-item">
+                            <strong>{{i.title}}</strong>
+                            @ {{i.venue}} <small>({{i.year}})</small>
+                        </li>
                     </router-link>
                 </ul>
             </div>
@@ -39,15 +42,10 @@
         history: window.localStorage.getItem('history') ? JSON.parse(window.localStorage.getItem('history')) : [],
       }
     },
-    watch: {
-      history() {
-        window.localStorage.setItem('history', JSON.stringify(this.history))
-        console.log(history)
-      }
-    },
     methods: {
       clearHistory() {
         this.history = []
+        window.localStorage.setItem('history', '[]')
       },
       search(input) {
         // const r = this.$axios.get('/papers/autocomplete', {
@@ -57,7 +55,7 @@
         return [input];
       },
       async onSubmit(result) {
-        await this.history.push(result)
+        // await this.history.push(result)
         await this.$router.push({
           path: '/paper',
           query: {

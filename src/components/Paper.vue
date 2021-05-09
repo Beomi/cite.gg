@@ -116,8 +116,24 @@
       if (this.paperInfo.metadata.citations.length < this.paper_query_limits && this.paperInfo.metadata.citations.length >= 1) {
         await this.getCommonReference()
       }
+      this.addHistory()
     },
     methods: {
+      addHistory() {
+        const history = window.localStorage.getItem('history') ? JSON.parse(window.localStorage.getItem('history')) : []
+        const item = {
+          'paperId': this.paperInfo.paper_id,
+          'title': this.paperInfo.metadata.title,
+          'venue': this.paperInfo.metadata.venue,
+          'year': this.paperInfo.metadata.year,
+        }
+        const idx = history.findIndex(function (i) {
+          return i.paperId === item.paperId
+        })
+        if (idx > -1) history.splice(idx, 1)
+        history.push(item)
+        window.localStorage.setItem('history', JSON.stringify(history.reverse()))
+      },
       async getMetaData() {
         const r = await this.$axios.get(`/papers/?query=${decodeURIComponent(this.paper_url)}`)
         this.paperInfo = r.data
