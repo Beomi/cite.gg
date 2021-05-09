@@ -21,7 +21,30 @@
         </div>
 
         <div class="detail">
+            <div class="form-floating">
+                <div><strong>Query Limits</strong></div>
+                <div class="">
+                    <input value="500" v-model="paper_query_limits"
+                           class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        500 (default)
+                    </label>
+                    <input value="1000" v-model="paper_query_limits"
+                           class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        1000
+                    </label>
+                    <input value="2000" v-model="paper_query_limits"
+                           class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3">
+                    <label class="form-check-label" for="flexRadioDefault3">
+                        2000
+                    </label>
+                </div>
+            </div>
+
             <h3>🔍 Common Reference <small>(Click cell to open semantic scholar url)</small></h3>
+
+
             <div v-if="paperInfo.metadata.citations.length === 0">
                 <div class="alert alert-secondary" role="alert">
                     No citations found.
@@ -30,11 +53,11 @@
             <div v-else-if="commonReference.length">
                 <CommonReference :dataset="commonReference"></CommonReference>
             </div>
-            <div v-else-if="paperInfo.metadata.citations.length >= 500">
+            <div v-else-if="paperInfo.metadata.citations.length >= paper_query_limits">
                 <div class="alert alert-danger" role="alert">
                     This paper has too many citations({{paperInfo.metadata.citations.length}}) to get common references
                     :( <br>
-                    Plz try with less-cited(~500) paper to get common refs.
+                    Plz try with less-cited(~{{paper_query_limits}}) paper to get common refs.
                 </div>
             </div>
             <div v-else-if="isQueryFailed">
@@ -75,8 +98,14 @@
         return this.$route.query['q']
       }
     },
+    watch: {
+      paper_query_limits() {
+        window.localStorage.setItem('paper_query_limits', this.paper_query_limits)
+      }
+    },
     data() {
       return {
+        paper_query_limits: window.localStorage.getItem('paper_query_limits') || 500,
         paperInfo: {},
         commonReference: [],
         isQueryFailed: false,
@@ -84,7 +113,7 @@
     },
     async mounted() {
       await this.getMetaData()
-      if (this.paperInfo.metadata.citations.length < 500 && this.paperInfo.metadata.citations.length >= 1) {
+      if (this.paperInfo.metadata.citations.length < this.paper_query_limits && this.paperInfo.metadata.citations.length >= 1) {
         await this.getCommonReference()
       }
     },
@@ -115,5 +144,13 @@
     small {
         font-weight: 200;
         font-size: 1rem;
+    }
+
+    .form-floating {
+        float: right;
+    }
+
+    .form-check-label {
+        margin: 0 5px;
     }
 </style>
