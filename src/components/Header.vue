@@ -2,7 +2,7 @@
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid container">
-                <router-link class="navbar-brand" to="/">Find My Reference!</router-link>
+                <router-link class="navbar-brand" to="/">Cite.GG</router-link>
                 <div class="d-flex">
                     <a href="https://github.com/beomi/find-my-reference" target="_blank">
                         <button class="btn btn-info">
