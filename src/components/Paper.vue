@@ -1,25 +1,25 @@
 <template>
     <div>
         <!--        <h1>Paper detail</h1>-->
-        <h2>{{paperInfo.metadata.title}} </h2>
-        <small>(paper_id: {{paperInfo.paper_id}})</small>
+        <h2>{{paperInfo.title}} </h2>
+        <h5>Published at {{paperInfo.venue}}, {{paperInfo.year}}</h5>
+        <small>(paper_id: {{paperInfo.paperId}})</small>
         <div>
-            <a target="blank" :href="paperInfo.metadata.url">{{paperInfo.metadata.url}}</a>
-            <p>
-                last update at: {{paperInfo.updated_at}}
-            </p>
+            <a target="blank" :href="paperInfo.url">{{paperInfo.url}}</a>
         </div>
-        <!--        <div>-->
-        <!--            <router-link to="/common-reference/" class="btn btn-primary btn-sm">-->
-        <!--                🔍 Find Common Reference!-->
-        <!--            </router-link>-->
-        <!--        </div>-->
 
         <div class="detail">
-            <h3>Abstract</h3>
-            {{paperInfo.metadata.abstract}}
+            <h3>Authors</h3>
+            <ul>
+                <li v-for="i in paperInfo['authors']" :key="i['authorId']">
+                    <a :href="i.url" target="_blank">{{i.name}}</a>
+                </li>
+            </ul>
         </div>
-
+        <div class="detail">
+            <h3>Abstract</h3>
+            {{paperInfo.abstract}}
+        </div>
         <div class="detail">
             <div class="form-floating">
                 <div><strong>Query Limits</strong></div>
@@ -45,7 +45,7 @@
             <h3>🔍 Common Reference <small>(Click cell to open semantic scholar url)</small></h3>
 
 
-            <div v-if="paperInfo.metadata.citations.length === 0">
+            <div v-if="paperInfo.citations.length === 0">
                 <div class="alert alert-secondary" role="alert">
                     No citations found.
                 </div>
@@ -53,9 +53,9 @@
             <div v-else-if="commonReference.length">
                 <CommonReference :dataset="commonReference"></CommonReference>
             </div>
-            <div v-else-if="paperInfo.metadata.citations.length >= paper_query_limits">
+            <div v-else-if="paperInfo.citations.length >= paper_query_limits">
                 <div class="alert alert-danger" role="alert">
-                    This paper has too many citations({{paperInfo.metadata.citations.length}}) to get common references
+                    This paper has too many citations({{paperInfo.citations.length}}) to get common references
                     :( <br>
                     Plz try with less-cited(~{{paper_query_limits}}) paper to get common refs.
                 </div>
@@ -74,13 +74,13 @@
 
         <div class="detail">
             <h3>Citations <small>(Click cell to open semantic scholar url)</small></h3>
-            <!--            <PaperCards :cards="paperInfo.metadata.citations"></PaperCards>-->
-            <ReferenceTable :dataset="paperInfo.metadata.citations"></ReferenceTable>
+            <!--            <PaperCards :cards="paperInfo.citations"></PaperCards>-->
+            <ReferenceTable :dataset="paperInfo.citations"></ReferenceTable>
         </div>
         <div class="detail">
             <h3>References <small>(Click cell to open semantic scholar url)</small></h3>
-            <ReferenceTable :dataset="paperInfo.metadata.references"></ReferenceTable>
-            <!--            <PaperCards :cards="paperInfo.metadata.references"></PaperCards>-->
+            <ReferenceTable :dataset="paperInfo.references"></ReferenceTable>
+            <!--            <PaperCards :cards="paperInfo.references"></PaperCards>-->
         </div>
     </div>
 </template>
@@ -113,7 +113,7 @@
     },
     async mounted() {
       await this.getMetaData()
-      if (this.paperInfo.metadata.citations.length < this.paper_query_limits && this.paperInfo.metadata.citations.length >= 1) {
+      if (this.paperInfo.citations.length < this.paper_query_limits && this.paperInfo.citations.length >= 1) {
         await this.getCommonReference()
       }
       this.addHistory()
@@ -122,10 +122,10 @@
       addHistory() {
         const history = window.localStorage.getItem('history') ? JSON.parse(window.localStorage.getItem('history')) : []
         const item = {
-          'paperId': this.paperInfo.paper_id,
-          'title': this.paperInfo.metadata.title,
-          'venue': this.paperInfo.metadata.venue,
-          'year': this.paperInfo.metadata.year,
+          'paperId': this.paperId,
+          'title': this.paperInfo.title,
+          'venue': this.paperInfo.venue,
+          'year': this.paperInfo.year,
         }
         const idx = history.findIndex(function (i) {
           return i.paperId === item.paperId
@@ -134,13 +134,28 @@
         history.push(item)
         window.localStorage.setItem('history', JSON.stringify(history.reverse()))
       },
+      getPaperId(x) {
+        if (x.length === 40) {
+          return x
+        } else if (x.match(/\d{4}[.]\d+/g).length) {
+          return 'arXiv:' + x.match(/\d{4}[.]\d+/g)[0]
+        } else if (x.match(/\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?!["&'<>])\S)+)\b/g).length) {
+          return x.match(/\b(10[.][0-9]{4,}(?:[.][0-9]+)*\/(?:(?!["&'<>])\S)+)\b/g)[0]
+        } else if (x.includes('semanticscholar.org')) {
+          const splits = x.split('/')
+          return splits[splits.length - 1].slice(0, 40)
+        }
+      },
       async getMetaData() {
-        const r = await this.$axios.get(`/papers/?query=${decodeURIComponent(this.paper_url)}`)
+        // TODO: API 대신 Semantic Scholar API로 대체하기
+        this.paperId = this.getPaperId(this.paper_url)
+        const r = await this.$axios.get(`https://api.semanticscholar.org/v1/paper/${this.paperId}`)
+        // const r = await this.$axios.get(`/papers/?query=${decodeURIComponent(this.paper_url)}`)
         this.paperInfo = r.data
       },
       async getCommonReference() {
         try {
-          const r = await this.$axios.get(`/papers/common-references/?query=${this.paperInfo.metadata['paperId']}`)
+          const r = await this.$axios.get(`/papers/common-references/?query=${this.paperInfo['paperId']}`)
           this.commonReference = r.data
         } catch (e) {
           console.log("Timeout?")

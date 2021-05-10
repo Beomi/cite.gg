@@ -4,7 +4,7 @@
                 :columns="columns"
                 :rows="dataset"
                 :pagination-options="{enabled: true}"
-                :sort-options="{enabled: true, initialSortBy: {field: 'counter', type: 'desc'}}"
+                :sort-options="{enabled: true, initialSortBy: {field: 'count', type: 'desc'}}"
                 theme="polar-bear"
                 @on-cell-click="onCellClick"
         />
