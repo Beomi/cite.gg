@@ -162,8 +162,13 @@
           console.error(e)
           this.isQueryFailed = true
         }
+      },
+    },
+    metaInfo() {
+      return {
+        'title': this.paperInfo.title,
       }
-    }
+    },
   }
 </script>
 

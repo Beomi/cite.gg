@@ -17,6 +17,7 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-good-table": "^2.21.10",
+    "vue-meta": "^2.4.0",
     "vue-router": "^3.5.1"
   },
   "devDependencies": {

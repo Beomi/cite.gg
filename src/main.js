@@ -7,6 +7,7 @@ import axios from 'axios'
 import VueRouter from 'vue-router'
 import {loadProgressBar} from 'axios-progress-bar'
 import 'axios-progress-bar/dist/nprogress.css'
+import VueMeta from 'vue-meta'
 
 
 import HelloWorld from './components/HelloWorld'
@@ -17,6 +18,7 @@ import VueGoodTablePlugin from 'vue-good-table';
 // import the styles
 import 'vue-good-table/dist/vue-good-table.css'
 
+Vue.use(VueMeta)
 
 Vue.use(Autocomplete)
 Vue.use(VueRouter)
