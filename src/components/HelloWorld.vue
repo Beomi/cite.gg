@@ -42,6 +42,11 @@
         history: window.localStorage.getItem('history') ? JSON.parse(window.localStorage.getItem('history')) : [],
       }
     },
+    metaInfo() {
+      return {
+        'title': 'Cite.GG',
+      }
+    },
     methods: {
       clearHistory() {
         this.history = []
