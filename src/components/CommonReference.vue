@@ -27,6 +27,7 @@
           {
             label: 'Count #',
             field: 'count',
+            type: 'number',
           },
           {
             label: 'Title',
