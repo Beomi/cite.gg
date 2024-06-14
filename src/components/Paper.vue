@@ -203,6 +203,7 @@ export default {
           .slice(0, Math.min(this.paperInfo.citations.length, 30)) // limit to 30
           .map((citation) => citation.paperId);
         const commonReferences = {};
+        const allReferences = [];
 
         for (const id of citationIds) {
           // Throttle requests to avoid hitting API limits
@@ -212,6 +213,7 @@ export default {
             `https://api.semanticscholar.org/v1/paper/${id}`
           );
           const references = paperData.data.references;
+          allReferences.push(...references);
 
           // Count each reference's occurrence
           references.forEach((reference) => {
@@ -229,15 +231,17 @@ export default {
           .map(([id, count]) => ({ id, count }))
           .sort((a, b) => b.count - a.count);
 
-        // Fetch metadata for the most common references
-        const referenceDetails = await Promise.all(
-          sortedReferences.slice(0, 10).map(async ({ id }) => {
-            const refData = await this.$axios.get(
-              `https://api.semanticscholar.org/v1/paper/${id}`
-            );
-            return { ...refData.data, count: commonReferences[id] };
-          })
-        );
+        // FIXME: 여기는 호출할 필요가 없는디?
+        // Find reference details from allReferences
+        const referenceDetails = sortedReferences.map((ref) => {
+          const reference = allReferences.find((r) => r.paperId === ref.id);
+          return {
+            ...reference,
+            count: ref.count,
+          };
+        });
+
+        // Update the commonReference property
 
         this.commonReference = referenceDetails;
       } catch (e) {
