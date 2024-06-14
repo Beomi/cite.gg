@@ -73,12 +73,11 @@
       <div v-else-if="commonReference.length">
         <CommonReference :dataset="commonReference"></CommonReference>
       </div>
-      <div v-else-if="paperInfo.citations.length >= paper_query_limits">
+      <div v-else-if="paperInfo.citations.length >= 1000">
         <div class="alert alert-danger" role="alert">
           This paper has too many citations({{ paperInfo.citations.length }}) to
           get common references :( <br />
-          Plz try with less-cited(~{{ paper_query_limits }}) paper to get common
-          refs.
+          Plz try with less-cited(~1000) paper to get common refs.
         </div>
       </div>
       <div v-else-if="isQueryFailed">
@@ -143,7 +142,7 @@ export default {
   async mounted() {
     await this.getMetaData();
     if (
-      this.paperInfo.citations.length < this.paper_query_limits &&
+      this.paperInfo.citations.length < 1000 &&
       this.paperInfo.citations.length >= 1
     ) {
       await this.getCommonReference();
