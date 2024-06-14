@@ -132,8 +132,12 @@ export default {
   },
   data() {
     return {
-      paper_query_limits:
-        window.localStorage.getItem("paper_query_limits") || 10,
+      paper_query_limits: Math.min(
+        // set default value as 10
+        parseInt(window.localStorage.getItem("paper_query_limits")) || 10,
+        // set max value as 30
+        30
+      ),
       paperInfo: {},
       commonReference: [],
       isQueryFailed: false,
@@ -196,7 +200,7 @@ export default {
     async getCommonReference() {
       try {
         const citationIds = this.paperInfo.citations
-          .slice(0, this.paper_query_limits)
+          .slice(0, Math.min(this.paperInfo.citations.length, 30)) // limit to 30
           .map((citation) => citation.paperId);
         const commonReferences = {};
 
