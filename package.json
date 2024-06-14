@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
     "lint": "vue-cli-service lint",
     "predeploy": "npm run build",
     "deploy": "echo 'cite.gg' > ./dist/CNAME && gh-pages -d dist"
