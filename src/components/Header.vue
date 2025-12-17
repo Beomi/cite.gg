@@ -4,6 +4,11 @@
             <div class="container-fluid container">
                 <router-link class="navbar-brand" to="/">Cite.GG</router-link>
                 <div class="d-flex">
+                    <router-link to="/settings">
+                        <button class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-gear"></i> Settings
+                        </button>
+                    </router-link>
                     <a href="https://github.com/beomi/find-my-reference" target="_blank">
                         <button class="btn btn-info">
                             Github <i class="bi-github"></i>

@@ -13,6 +13,7 @@ import VueMeta from 'vue-meta'
 import HelloWorld from './components/HelloWorld'
 import Paper from './components/Paper'
 import CommonReference from "./components/CommonReference";
+import Settings from "./components/Settings";
 import VueGoodTablePlugin from 'vue-good-table';
 
 // import the styles
@@ -29,6 +30,13 @@ const instance = axios.create({
   baseURL: DEV ? 'http://localhost:8000' : 'https://api.cite.gg',
   timeout: 100000,
 });
+
+// Load API key from localStorage if available (BYOK)
+const savedApiKey = window.localStorage.getItem('apiKey');
+if (savedApiKey) {
+  instance.defaults.headers.common['x-api-key'] = savedApiKey;
+}
+
 Vue.prototype.$axios = instance
 loadProgressBar({}, instance)
 
@@ -36,6 +44,7 @@ const routes = [
   {path: '/', component: HelloWorld},
   {path: '/paper', component: Paper},
   {path: '/common-reference', component: CommonReference},
+  {path: '/settings', component: Settings},
 ]
 
 const router = new VueRouter({
